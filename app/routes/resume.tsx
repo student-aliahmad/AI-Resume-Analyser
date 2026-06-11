@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import ATS from '~/components/ATS';
 import Details from '~/components/Details';
-import Summary from '~/components/summary';
+import Summary from '~/components/Summary';
 import { usePuterStore } from '~/lib/puter';
 
 export const meta = () => ([
@@ -19,13 +19,17 @@ const resume = () => {
   const [feedback, setfeedback] = useState<Feedback | null>(null);
   const navigate = useNavigate();
 
-   useEffect( () => {
-      if(!isLoading && !auth.isAuthenticated) navigate(`/auth?next=/resume/${id}`); 
-    },[isLoading])
+useEffect(() => {
+  if (!isLoading) {
+    if (!auth.isAuthenticated) {
+      navigate(`/auth?next=/resume/${id}`);
+    }
+  }
+}, [isLoading, auth.isAuthenticated, id, navigate]);
   
   useEffect( () => {
     const loadResume = async () => {
-      const resume = await kv.get(`resume:{id}`);
+      const resume = await kv.get(`resume:${id}`);
       if(!resume) return;
       const data = JSON.parse(resume);
       const resumeBlob = await fs.read(data.resumePath);
