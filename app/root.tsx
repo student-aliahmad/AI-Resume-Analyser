@@ -6,11 +6,19 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
+import { ClerkProvider } from "@clerk/clerk-react";
 
 import type { Route } from "./+types/root";
 import "./app.css";
-import { usePuterStore } from "./lib/puter";
-import { useEffect } from "react";
+// import { useGeminiStore } from '~/lib/gemini';
+// import { useEffect } from "react";
+
+//Read key from .env file
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+if (!PUBLISHABLE_KEY) {
+  throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY in .env");
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -26,13 +34,17 @@ export const links: Route.LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const {init} = usePuterStore();
+  if(!PUBLISHABLE_KEY){
+    throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY in .env file");
+  }
+  // const {init} = useGeminiStore();
 
-  useEffect( () => {
-    init()
-  }, [init]);
+  // useEffect( () => {
+  //   init()
+  // }, [init]);
   
   return (
+    
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
@@ -41,17 +53,25 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <script src="https://js.puter.com/v2/"></script>
-        {children}
+        {/* <script src="https://js.puter.com/v2/"></script> */}
+        
+          {children}
+       
+       
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
+    
   );
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+  <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+      <Outlet />
+    </ClerkProvider>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {

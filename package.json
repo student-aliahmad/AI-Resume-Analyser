@@ -9,6 +9,9 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@clerk/clerk-react": "^5.61.9",
+    "@google/genai": "^2.17.1",
+    "@google/generative-ai": "^0.24.1",
     "@react-router/node": "7.16.0",
     "@react-router/serve": "7.16.0",
     "clsx": "^2.1.1",
